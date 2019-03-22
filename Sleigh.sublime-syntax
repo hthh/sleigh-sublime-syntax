@@ -1,0 +1,47 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+file_extensions:
+  - sinc
+  - slaspec
+scope: source.sleigh
+contexts:
+  main:
+    - match: '"'
+      scope: punctuation.definition.string.begin.sleigh
+      push: double_quoted_string
+
+    - match: '\b(is|with|alignment|attach|big|bitrange|build|call|context|crossbuild|dec|default|define|endian|export|goto|hex|little|local|macro|names|noflow|offset|pcodeop|return|signed|size|space|token|type|unimpl|values|variables|wordsize|if)\b'
+      scope: keyword.control.sleigh
+
+    # Numbers
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric.sleigh
+    - match: '\b(-)?0x[0-9a-fA-F]+\b'
+      scope: constant.numeric.sleigh
+    - match: '\b(-)?0b[01]+\b'
+      scope: constant.numeric.sleigh
+
+    - include: comments
+    - include: preprocessor
+
+  double_quoted_string:
+    - meta_scope: string.quoted.double.sleigh
+    - match: '\\.'
+      scope: constant.character.escape.sleigh
+    - match: '"'
+      scope: punctuation.definition.string.end.sleigh
+      pop: true
+
+  preprocessor:
+    - match: ^\s*(@\s*(?:include|define|define|define|undef|ifdef|ifndef|if|elif|endif|else))\b
+      captures:
+        1: keyword.control.import.define.sleigh
+
+  comments:
+    - match: "#"
+      scope: punctuation.definition.comment.sleigh
+      push:
+        - meta_scope: comment.line.number-sign.sleigh
+        - match: \n
+          pop: true
